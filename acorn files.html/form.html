@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Forms</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+          
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .form-container {
+            padding: 40px;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .form-container.hidden {
+            transform: translateX(100%);
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .form-container.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .phone-group {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .phone-input {
+            flex: 2;
+        }
+
+        .code-input {
+            flex: 1;
+        }
+
+        .send-code-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .send-code-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .send-code-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .switch-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .switch-btn:hover {
+            color: #764ba2;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .strength-weak { color: #dc3545; }
+        .strength-medium { color: #ffc107; }
+        .strength-strong { color: #28a745; }
+
+        .loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (min-width: 1200px) {
+            .container { max-width: 500px; }
+            .form-container { padding: 50px; }
+            h2 { font-size: 32px; }
+            input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+                padding: 18px; font-size: 17px;
+            }
+            .btn { padding: 18px; font-size: 18px; }
+        }
+
+        @media (max-width: 1199px) and (min-width: 769px) {
+            .container { max-width: 450px; }
+            .form-container { padding: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            .container { max-width: 100%; margin: 0; }
+            .form-container { padding: 35px 30px; }
+            h2 { font-size: 26px; margin-bottom: 25px; }
+            input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+                padding: 14px; font-size: 16px;
+            }
+            .btn { padding: 14px; font-size: 16px; }
+            .send-code-btn { padding: 14px 18px; font-size: 13px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { margin: 0; border-radius: 15px; }
+            .form-container { padding: 30px 25px; }
+            h2 { font-size: 24px; margin-bottom: 20px; }
+            .form-group { margin-bottom: 18px; }
+            input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+                padding: 12px; font-size: 16px; border-radius: 10px;
+            }
+            .btn { padding: 12px; font-size: 15px; border-radius: 10px; }
+            .phone-group { flex-direction: column; gap: 15px; align-items: stretch; }
+            .phone-input, .code-input { flex: none; }
+            .send-code-btn { padding: 12px 16px; font-size: 14px; border-radius: 10px; align-self: stretch; }
+            .switch-btn { font-size: 13px; margin-top: 15px; }
+        }
+
+        @media (max-width: 360px) {
+            .form-container { padding: 25px 20px; }
+            h2 { font-size: 22px; }
+            input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+                padding: 10px; font-size: 15px;
+            }
+            .btn { padding: 10px; font-size: 14px; }
+            .send-code-btn { padding: 10px 12px; font-size: 13px; }
+            label { font-size: 13px; }
+            .error-message, .success-message { font-size: 11px; }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            body { padding: 10px; align-items: flex-start; padding-top: 20px; }
+            .container { margin: 0 auto; }
+            .form-container { padding: 25px 30px; }
+            h2 { font-size: 22px; margin-bottom: 15px; }
+            .form-group { margin-bottom: 15px; }
+        }
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            input[type="text"], input[type="email"], input[type="password"], input[type="tel"] {
+                border-width: 1px;
+            }
+            .container { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sign Up Form -->
+        <div id="signupForm" class="form-container visible">
+            <h2>Create Account</h2>
+            
+            <form id="signup">
+                <div class="form-group">
+                    <label for="signupPhone">Phone Number</label>
+                    <div class="phone-group">
+                        <div class="phone-input">
+                            <input type="tel" id="signupPhone" name="phone" placeholder="+234567890" required>
+                        </div>
+                        <button type="button" class="send-code-btn" id="sendCodeBtn">Send Code</button>
+                    </div>
+                    <div class="error-message" id="phoneError"></div>
+                    <div class="success-message" id="phoneSuccess"></div>
+                </div>
+
+                <div class="form-group" id="codeGroup" style="display: none;">
+                    <label for="verificationCode">Verification Code</label>
+                    <input type="text" id="verificationCode" name="verificationCode" placeholder="Enter 6-digit code" maxlength="10">
+                    <div class="error-message" id="codeError"></div>
+                    <div class="success-message" id="codeSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required>
+                    <div class="password-strength" id="passwordStrength"></div>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+                
+                <a href="./index.html" class="btn" id="signupBtn">Sign Up</a>
+            </form>
+            
+            <button class="switch-btn" onclick="switchToLogin()">Already have an account? Login</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="form-container hidden">
+            <h2>Welcome Back</h2>
+            <form id="login">
+                <div class="form-group">
+                    <label for="loginPhone">Phone Number</label>
+                    <div class="phone-group">
+                        <div class="phone-input">
+                            <input type="tel" id="loginPhone" name="phone" placeholder="+1234567890" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                    <div class="error-message" id="loginPasswordError"></div>
+                </div>
+                
+                <a href="./index.html" class="btn" id="signupBtn">Login</a>
+            </form>
+            
+            <button class="switch-btn" onclick="switchToSignup()">Don't have an account? Sign Up</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase Configuration - Replace with your actual config
+        const firebaseConfig = {
+            apiKey: "your-api-key",
+            authDomain: "your-project-id.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "your-sender-id",
+            appId: "your-app-id"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global variables
+        let currentUser = null;
+        let verificationCode = "";
+
+        // Demo SMS Logic - Replaces Firebase SMS
+        function sendVerificationCode(phone) {
+            return new Promise((resolve) => {
+                verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                setTimeout(() => {
+                    showSuccess("phoneSuccess", `Code sent to ${phone}. Demo code: ${verificationCode}`);
+                    document.getElementById("codeGroup").style.display = "block";
+                    resolve(true);
+                }, 1500);
+            });
+        }
+
+        async function verifyCode(code) {
+            if (!verificationCode) {
+                throw new Error("No verification code sent. Please request a new code.");
+            }
+            if (code !== verificationCode) {
+                throw new Error("Invalid verification code. Please try again.");
+            }
+            return { uid: "demo-user-" + Date.now() };
+        }
+
+        // Form switching functionality
+        window.switchToLogin = function() {
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('visible');
+            
+            setTimeout(() => {
+                document.getElementById('loginForm').classList.add('visible');
+                document.getElementById('loginForm').classList.remove('hidden');
+            }, 250);
+        }
+
+        window.switchToSignup = function() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('visible');
+            
+            setTimeout(() => {
+                document.getElementById('signupForm').classList.add('visible');
+                document.getElementById('signupForm').classList.remove('hidden');
+            }, 250);
+        }
+
+        // Utility functions for messages
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function hideError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }
+
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            if (successElement) {
+                successElement.textContent = message;
+                successElement.style.display = 'block';
+            }
+        }
+
+        function hideSuccess(elementId) {
+            const successElement = document.getElementById(elementId);
+            if (successElement) {
+                successElement.style.display = 'none';
+            }
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            const strengthElement = document.getElementById('passwordStrength');
+            if (!strengthElement) return false;
+            
+            let strength = 0;
+            let feedback = '';
+
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            if (strength < 3) {
+                feedback = 'Weak password';
+                strengthElement.className = 'password-strength strength-weak';
+            } else if (strength < 5) {
+                feedback = 'Medium strength password';
+                strengthElement.className = 'password-strength strength-medium';
+            } else {
+                feedback = 'Strong password';
+                strengthElement.className = 'password-strength strength-strong';
+            }
+
+            strengthElement.textContent = feedback;
+            return strength >= 3;
+        }
+
+        // Phone validation
+        function isValidPhoneNumber(phone) {
+            const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+            return phoneRegex.test(phone);
+        }
+
+        // Convert phone to email format for Firebase Auth
+        function phoneToEmail(phone) {
+            return phone.replace(/[^0-9]/g, '') + '@phoneauth.local';
+        }
+
+        // Save user data to Firestore
+        async function saveUserToFirestore(uid, userData) {
+            try {
+                await setDoc(doc(db, 'users', uid), {
+                    phone: userData.phone,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString(),
+                    phoneVerified: userData.phoneVerified || false
+                });
+                console.log('User data saved to Firestore');
+            } catch (error) {
+                console.error('Error saving user data:', error);
+                throw error;
+            }
+        }
+
+        // Get user data from Firestore
+        async function getUserFromFirestore(uid) {
+            try {
+                const docRef = doc(db, 'users', uid);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    return docSnap.data();
+                } else {
+                    console.log('No such document!');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error getting user data:', error);
+                return null;
+            }
+        }
+
+        // Sign up with email/password (using phone as basis)
+        async function signUpWithEmail(phone, password, phoneVerified = false) {
+            try {
+                const email = phoneToEmail(phone);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Save additional user data to Firestore
+                await saveUserToFirestore(userCredential.user.uid, { 
+                    phone, 
+                    phoneVerified 
+                });
+                
+                return userCredential.user;
+            } catch (error) {
+                console.error('Error creating user:', error);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    throw new Error('Phone number already registered.');
+                } else if (error.code === 'auth/weak-password') {
+                    throw new Error('Password is too weak.');
+                } else {
+                    throw new Error('Failed to create account. Please try again.');
+                }
+            }
+        }
+
+        // Sign in with email/password
+        async function signInWithEmail(phone, password) {
+            try {
+                const email = phoneToEmail(phone);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Update last login in Firestore
+                await setDoc(doc(db, 'users', userCredential.user.uid), {
+                    lastLogin: new Date().toISOString()
+                }, { merge: true });
+                
+                return userCredential.user;
+            } catch (error) {
+                console.error('Error signing in:', error);
+                
+                if (error.code === 'auth/user-not-found') {
+                    throw new Error("Don't have an account? Please sign up first to continue.");
+                } else if (error.code === 'auth/wrong-password') {
+                    throw new Error('Incorrect password. Please try again.');
+                } else if (error.code === 'auth/invalid-email') {
+                    throw new Error('Invalid phone number format.');
+                } else {
+                    throw new Error('Failed to sign in. Please try again.');
+                }
+            }
+        }
+
+        // Logout function
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                console.log('User signed out');
+                window.location.reload();
+            } catch (error) {
+                console.error('Error signing out:', error);
+            }
+        }
+
+        // Event listeners setup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Monitor auth state
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log('User is signed in:', user.uid);
+                    // Redirect to dashboard or update UI here
+                    // window.location.href = './dashboard.html';
+                } else {
+                    currentUser = null;
+                    console.log('User is signed out');
+                }
+            });
+
+            // Send verification code
+            const sendCodeBtn = document.getElementById('sendCodeBtn');
+            if (sendCodeBtn) {
+                sendCodeBtn.addEventListener('click', async function() {
+                    const phoneInput = document.getElementById('signupPhone');
+                    const phone = phoneInput.value.trim();
+                    
+                    if (!phone) {
+                        showError('phoneError', 'Please enter a phone number');
+                        return;
+                    }
+
+                    if (!isValidPhoneNumber(phone)) {
+                        showError('phoneError', 'Please enter a valid phone number');
+                        return;
+                    }
+
+                    this.disabled = true;
+                    this.classList.add('loading');
+                    this.textContent = 'Sending...';
+                    
+                    try {
+                        await sendVerificationCode(phone);
+                        hideError('phoneError');
+                        this.textContent = 'Resend Code';
+                    } catch (error) {
+                        showError('phoneError', error.message);
+                        this.textContent = 'Send Code';
+                    } finally {
+                        this.disabled = false;
+                        this.classList.remove('loading');
+                    }
+                });
+            }
+
+            // Password strength checking
+            const passwordInput = document.getElementById('signupPassword');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    if (this.value) {
+                        checkPasswordStrength(this.value);
+                    } else {
+                        const strengthElement = document.getElementById('passwordStrength');
+                        if (strengthElement) strengthElement.textContent = '';
+                    }
+                });
+            }
+
+            // Confirm password validation
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            if (confirmPasswordInput) {
+                confirmPasswordInput.addEventListener('input', function() {
+                    const password = document.getElementById('signupPassword').value;
+                    if (this.value && this.value !== password) {
+                        showError('confirmPasswordError', 'Passwords do not match');
+                    } else {
+                        hideError('confirmPasswordError');
+                    }
+                });
+            }
+
+            // Sign up form submission
+            const signupForm = document.getElementById('signup');
+            if (signupForm) {
+                signupForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const phone = document.getElementById('signupPhone').value.trim();
+                    const code = document.getElementById('verificationCode').value.trim();
+                    const password = document.getElementById('signupPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    let isValid = true;
+
+                    // Reset all errors
+                    ['phoneError', 'codeError', 'passwordError', 'confirmPasswordError'].forEach(hideError);
+
+                    // Validate phone
+                    if (!phone) {
+                        showError('phoneError', 'Phone number is required');
+                        isValid = false;
+                    }
+
+                    // Validate password
+                    if (!password) {
+                        showError('passwordError', 'Password is required');
+                        isValid = false;
+                    } else if (!checkPasswordStrength(password)) {
+                        showError('passwordError', 'Password is too weak');
+                        isValid = false;
+                    }
+
+                    // Validate password confirmation
+                    if (!confirmPassword) {
+                        showError('confirmPasswordError', 'Please confirm your password');
+                        isValid = false;
+                    } else if (password !== confirmPassword) {
+                        showError('confirmPasswordError', 'Passwords do not match');
+                        isValid = false;
+                    }
+
+                    if (!isValid) return;
+
+                    const signupBtn = document.getElementById('signupBtn');
+                    signupBtn.disabled = true;
+                    signupBtn.classList.add('loading');
+                    signupBtn.textContent = 'Creating Account...';
+
+                    try {
+                        let user;
+                        let phoneVerified = false;
+                        
+                        // Try phone verification first if code is provided
+                        if (code && verificationCode) {
+                            try {
+                                await verifyCode(code);
+                                phoneVerified = true;
+                                showSuccess('codeSuccess', 'Phone verified successfully!');
+                            } catch (phoneError) {
+                                showError('codeError', phoneError.message);
+                                signupBtn.disabled = false;
+                                signupBtn.classList.remove('loading');
+                                signupBtn.textContent = 'Sign Up';
+                                return;
+                            }
+                        }
+
+                        // Create account with Firebase Auth
+                        user = await signUpWithEmail(phone, password, phoneVerified);
+
+                        showSuccess('phoneSuccess', 'Account created successfully! Redirecting...');
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            // window.location.href = './dashboard.html';
+                            console.log('User created successfully:', user.uid);
+                        }, 1500);
+                        
+                    } catch (error) {
+                        showError('phoneError', error.message);
+                    } finally {
+                        signupBtn.disabled = false;
+                        signupBtn.classList.remove('loading');
+                        signupBtn.textContent = 'Sign Up';
+                    }
+                });
+            }
+
+            // Login form submission
+            const loginForm = document.getElementById('login');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const phone = document.getElementById('loginPhone').value.trim();
+                    const password = document.getElementById('loginPassword').value.trim();
+
+                    // Clear previous errors
+                    hideError('loginPasswordError');
+
+                    // Basic validation
+                    if (!phone || !password) {
+                        showError('loginPasswordError', 'Please fill in all fields');
+                        return;
+                    }
+
+                    // Validate phone number format
+                    if (!isValidPhoneNumber(phone)) {
+                        showError('loginPasswordError', 'Please enter a valid phone number');
+                        return;
+                    }
+
+                    const loginBtn = document.getElementById('loginBtn');
+                    loginBtn.disabled = true;
+                    loginBtn.classList.add('loading');
+                    loginBtn.textContent = 'Signing In...';
+
+                    try {
+                        const user = await signInWithEmail(phone, password);
+                        showSuccess('loginPasswordError', 'Login successful! Redirecting...');
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            // window.location.href = './dashboard.html';
+                            console.log('User logged in successfully:', user.uid);
+                        }, 1500);
+                        
+                    } catch (error) {
+                        showError('loginPasswordError', error.message);
+                        
+                        // Add signup link for new users
+                        if (error.message.includes("Don't have an account")) {
+                            setTimeout(() => {
+                                const errorElement = document.getElementById('loginPasswordError');
+                                if (errorElement) {
+                                    const signupLink = document.createElement('div');
+                                    signupLink.innerHTML = '<span onclick="switchToSignup()" style="color: #3498db; text-decoration: underline; cursor: pointer;">Click here to sign up</span>';
+                                    signupLink.style.marginTop = '10px';
+                                    errorElement.appendChild(signupLink);
+                                }
+                            }, 100);
+                        }
+                    } finally {
+                        loginBtn.disabled = false;
+                        loginBtn.classList.remove('loading');
+                        loginBtn.textContent = 'Login';
+                    }
+                });
+            }
+
+            // Clear errors when user starts typing
+            const inputs = ['loginPhone', 'loginPassword', 'signupPhone', 'signupPassword', 'confirmPassword', 'verificationCode'];
+            inputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        // Clear related error messages
+                        const errorMappings = {
+                            'loginPhone': 'loginPasswordError',
+                            'loginPassword': 'loginPasswordError',
+                            'signupPhone': 'phoneError',
+                            'signupPassword': 'passwordError',
+                            'confirmPassword': 'confirmPasswordError',
+                            'verificationCode': 'codeError'
+                        };
+                        
+                        const errorId = errorMappings[inputId];
+                        if (errorId) {
+                            hideError(errorId);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Check-in System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .balance-label {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .currency {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .checkin-section {
+            margin-bottom: 30px;
+        }
+
+        .checkin-btn {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .checkin-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(78, 205, 196, 0.5);
+        }
+
+        .checkin-btn:disabled {
+            background: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .reward-info {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .reward-amount {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .reward-text {
+            color: #718096;
+        }
+
+        .rules {
+            text-align: left;
+            background: #fff5f5;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #feb2b2;
+        }
+
+        .rules h3 {
+            color: #c53030;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .rules ul {
+            list-style: none;
+            color: #2d3748;
+        }
+
+        .rules li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .rules li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #c53030;
+            font-weight: bold;
+        }
+
+        .timer {
+            background: #fff3cd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .timer-text {
+            color: #856404;
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .coin-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .balance-amount {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="coin-icon">💰</span>Daily Check-in</h1>
+            <p>Earn rewards by checking in daily!</p>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-label">Account Balance</div>
+            <div class="balance-amount">R<span id="balance">1000.00</span></div>
+            <div class="currency">South African Rand</div>
+        </div>
+
+        <div class="reward-info">
+            <div class="reward-amount"><span class="coin-icon">🎁</span>R1.00</div>
+            <div class="reward-text">Daily Free Gift</div>
+        </div>
+
+        <div class="checkin-section">
+            <button id="checkinBtn" class="checkin-btn">
+                <span class="coin-icon">✨</span>Check In Now
+            </button>
+            <div id="timer" class="timer" style="display: none;">
+                <div class="timer-text">Next check-in available in: <span id="countdown">--:--:--</span></div>
+            </div>
+            <div id="successMessage" class="success-message">
+                <strong>Success!</strong> You've earned R1.00! Come back tomorrow for another reward.
+            </div>
+        </div>
+
+        <div class="rules">
+            <h3>Check-in Rules</h3>
+            <ul>
+                <li>Daily free gift worth R1.00</li>
+                <li>You can check in once per day</li>
+                <li>After 24 hours, you can check in again</li>
+                <li>Rewards are automatically added to your balance</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        class DailyCheckin {
+            constructor() {
+                this.balance = parseFloat(this.getStoredValue('balance', '1000.00'));
+                this.lastCheckin = this.getStoredValue('lastCheckin', null);
+                this.reward = 1.00;
+                this.cooldownHours = 24;
+                
+                this.balanceElement = document.getElementById('balance');
+                this.checkinBtn = document.getElementById('checkinBtn');
+                this.timer = document.getElementById('timer');
+                this.countdown = document.getElementById('countdown');
+                this.successMessage = document.getElementById('successMessage');
+                
+                this.init();
+            }
+
+            getStoredValue(key, defaultValue) {
+                const stored = localStorage?.getItem(key);
+                return stored ? stored : defaultValue;
+            }
+
+            setStoredValue(key, value) {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem(key, value);
+                }
+            }
+
+            init() {
+                this.updateBalance();
+                this.checkCheckinStatus();
+                this.setupEventListeners();
+                this.startTimer();
+            }
+
+            setupEventListeners() {
+                this.checkinBtn.addEventListener('click', () => this.performCheckin());
+            }
+
+            updateBalance() {
+                this.balanceElement.textContent = this.balance.toFixed(2);
+            }
+
+            canCheckin() {
+                if (!this.lastCheckin) return true;
+                
+                const lastCheckinTime = new Date(this.lastCheckin);
+                const now = new Date();
+                const timeDiff = now - lastCheckinTime;
+                const hoursDiff = timeDiff / (1000 * 60 * 60);
+                
+                return hoursDiff >= this.cooldownHours;
+            }
+
+            getTimeUntilNextCheckin() {
+                if (!this.lastCheckin) return 0;
+                
+                const lastCheckinTime = new Date(this.lastCheckin);
+                const nextCheckinTime = new Date(lastCheckinTime.getTime() + (this.cooldownHours * 60 * 60 * 1000));
+                const now = new Date();
+                
+                return Math.max(0, nextCheckinTime - now);
+            }
+
+            formatTime(milliseconds) {
+                const totalSeconds = Math.floor(milliseconds / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            checkCheckinStatus() {
+                if (this.canCheckin()) {
+                    this.checkinBtn.disabled = false;
+                    this.checkinBtn.innerHTML = '<span class="coin-icon">✨</span>Check In Now';
+                    this.timer.style.display = 'none';
+                    this.checkinBtn.classList.add('pulse');
+                } else {
+                    this.checkinBtn.disabled = true;
+                    this.checkinBtn.innerHTML = '<span class="coin-icon">⏰</span>Already Checked In';
+                    this.timer.style.display = 'block';
+                    this.checkinBtn.classList.remove('pulse');
+                }
+            }
+
+            performCheckin() {
+                if (!this.canCheckin()) return;
+
+                // Add reward to balance
+                this.balance += this.reward;
+                this.lastCheckin = new Date().toISOString();
+                
+                // Store updated values
+                this.setStoredValue('balance', this.balance.toString());
+                this.setStoredValue('lastCheckin', this.lastCheckin);
+                
+                // Update UI
+                this.updateBalance();
+                this.checkCheckinStatus();
+                this.showSuccessMessage();
+            }
+
+            showSuccessMessage() {
+                this.successMessage.style.display = 'block';
+                setTimeout(() => {
+                    this.successMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            startTimer() {
+                setInterval(() => {
+                    const timeUntilNext = this.getTimeUntilNextCheckin();
+                    
+                    if (timeUntilNext <= 0 && this.checkinBtn.disabled) {
+                        this.checkCheckinStatus();
+                    } else if (timeUntilNext > 0) {
+                        this.countdown.textContent = this.formatTime(timeUntilNext);
+                    }
+                }, 1000);
+            }
+        }
+
+        // Initialize the daily check-in system
+        document.addEventListener('DOMContentLoaded', () => {
+            new DailyCheckin();
+        });
+    </script>
+</body>
+</html>

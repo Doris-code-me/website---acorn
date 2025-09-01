@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Funds</title>
+     <script type="module" src="./js/config/config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-3px);
+        }
+
+        .balance-display {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(78, 205, 196, 0.3);
+        }
+
+        .balance-label {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 2.8em;
+            font-weight: bold;
+        }
+
+        .form-section {
+            padding: 0 30px 30px 30px;
+        }
+
+        .step {
+            margin-bottom: 30px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.1em;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .bank-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+        }
+
+        .bank-list option {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .amount-suggestions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .amount-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            color: #2d3748;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .amount-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .withdraw-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+            width: 100%;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .withdraw-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .withdraw-btn:disabled {
+            background: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .withdraw-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .withdraw-btn:hover::before {
+            left: 100%;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+
+        .withdrawal-info {
+            background: #fff3cd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .withdrawal-info h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .withdrawal-info ul {
+            list-style: none;
+            color: #856404;
+        }
+
+        .withdrawal-info li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .withdrawal-info li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #ffc107;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .coin-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .balance-amount {
+                font-size: 2.2em;
+            }
+            
+            .form-section {
+                padding: 0 20px 20px 20px;
+            }
+            
+            .amount-suggestions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .step-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .amount-btn {
+                flex: 1;
+                min-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.history.back()">← Back</button>
+            <h1><span class="coin-icon">💳</span>Withdraw Funds</h1>
+            <p>Transfer your earnings to your bank account</p>
+        </div>
+
+        <div class="balance-display">
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-amount">#<span id="balance">20.00</span></div>
+        </div>
+
+        <div class="form-section">
+            <div class="withdrawal-info">
+                <h3>📋 Withdrawal Information</h3>
+                <ul>
+                    <li>Minimum withdrawal: #100.00</li>
+                    <li>Maximum withdrawal: #500,000.00 per day</li>
+                    <li>Processing time: Instant to 24 hours</li>
+                    <li>Withdrawal fee: 20% of amount</li>
+                </ul>
+            </div>
+
+            <form id="withdrawalForm">
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Enter Amount</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="withdrawAmount">Withdrawal Amount (#)</label>
+                        <input type="number" id="withdrawAmount" placeholder="Enter amount to withdraw" min="100" max="500000" step="0.01" required>
+                        <div class="fee-info" id="feeInfo" style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107; display: none;">
+                            <small style="color: #856404; font-weight: 600;">
+                                <span>Withdrawal Fee (20%): ₦<span id="feeAmount">0.00</span></span><br>
+                                <span>Amount You'll Receive: ₦<span id="netAmount">0.00</span></span>
+                            </small>
+                        </div>
+                        <div class="amount-suggestions">
+                            <button type="button" class="amount-btn" data-amount="100">#100</button>
+                            <button type="button" class="amount-btn" data-amount="200">#200</button>
+                            <button type="button" class="amount-btn" data-amount="500">#500</button>
+                            <button type="button" class="amount-btn" data-amount="1000">#1,000</button>
+                            <button type="button" class="amount-btn" data-amount="5000">#5,000</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Account Details</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accountNumber">Account Number</label>
+                        <input type="text" id="accountNumber" placeholder="Enter your account number" maxlength="10" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bankName">Select Bank</label>
+                        <select id="bankName" class="bank-list" required>
+                            <option value="">First enter your account number above</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accountHolder">Account Name</label>
+                        <input type="text" id="accountHolder" placeholder="Account holder name will appear here" readonly>
+                    </div>
+                </div>
+
+                <button type="submit" id="withdrawBtn" class="withdraw-btn">
+                    <span class="coin-icon">💸</span>Process Withdrawal
+                </button>
+
+                <div id="withdrawalMessage" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        class WithdrawalSystem {
+            constructor() {
+                this.balance = parseFloat(this.getStoredValue('balance', '20.00'));
+                this.bankList = [];
+                this.initializeElements();
+                this.loadBankList();
+                this.setupEventListeners();
+                this.updateBalance();
+            }
+
+            initializeElements() {
+                this.balanceElement = document.getElementById('balance');
+                this.withdrawAmount = document.getElementById('withdrawAmount');
+                this.accountNumber = document.getElementById('accountNumber');
+                this.bankName = document.getElementById('bankName');
+                this.accountHolder = document.getElementById('accountHolder');
+                this.withdrawBtn = document.getElementById('withdrawBtn');
+                this.withdrawalMessage = document.getElementById('withdrawalMessage');
+                this.withdrawalForm = document.getElementById('withdrawalForm');
+                this.feeInfo = document.getElementById('feeInfo');
+                this.feeAmount = document.getElementById('feeAmount');
+                this.netAmount = document.getElementById('netAmount');
+            }
+
+            getStoredValue(key, defaultValue) {
+                const stored = localStorage?.getItem(key);
+                return stored ? stored : defaultValue;
+            }
+
+            setStoredValue(key, value) {
+                if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem(key, value);
+                }
+            }
+
+            loadBankList() {
+                this.bankList = [
+                    // Most Popular Nigerian Banks
+                    { code: '033', name: 'United Bank For Africa (UBA)' },
+                    { code: '011', name: 'First Bank of Nigeria' },
+                    { code: '057', name: 'Zenith Bank' },
+                    { code: '058', name: 'Guaranty Trust Bank (GTBank)' },
+                    { code: '044', name: 'Access Bank' },
+                    { code: '070', name: 'Fidelity Bank' },
+                    { code: '232', name: 'Sterling Bank' },
+                    { code: '214', name: 'First City Monument Bank (FCMB)' },
+                    { code: '068', name: 'Standard Chartered Bank' },
+                    { code: '221', name: 'Stanbic IBTC Bank' },
+                    { code: '032', name: 'Union Bank of Nigeria' },
+                    { code: '035', name: 'Wema Bank' },
+                    { code: '076', name: 'Polaris Bank' },
+                    { code: '215', name: 'Unity Bank' },
+                    { code: '030', name: 'Heritage Bank' },
+                    { code: '050', name: 'Ecobank Nigeria' },
+                    { code: '082', name: 'Keystone Bank' },
+                    { code: '301', name: 'Jaiz Bank' },
+                    { code: '101', name: 'Providus Bank' },
+                    { code: '100', name: 'Suntrust Bank' },
+                    { code: '023', name: 'Citi Bank' },
+                    
+                    // Digital Banks & Fintech (Most Popular)
+                    { code: '999', name: 'OPay Digital Services' },
+                    { code: '999', name: 'PalmPay' },
+                    { code: '999', name: 'Kuda Bank' },
+                    { code: '999', name: 'Carbon (formerly Paylater)' },
+                    { code: '999', name: 'ALAT by Wema' },
+                    { code: '999', name: 'VBank (VFD Microfinance Bank)' },
+                    { code: '999', name: 'Rubies Bank' },
+                    { code: '999', name: 'Moniepoint' },
+                    { code: '999', name: 'Sparkle Bank' },
+                    { code: '999', name: 'Mint Bank' },
+                    { code: '999', name: 'GoMoney' },
+                    { code: '999', name: 'FairMoney' },
+                    { code: '999', name: 'Renmoney' },
+                    { code: '999', name: 'Branch International' },
+                    { code: '999', name: 'Eyowo' },
+                    { code: '999', name: 'Paga' },
+                    
+                    // Payment Processors
+                    { code: '999', name: 'Flutterwave' },
+                    { code: '999', name: 'Paystack' },
+                    { code: '999', name: 'Interswitch' },
+                    
+                    // Microfinance Banks (Popular ones)
+                    { code: '999', name: 'Lapo Microfinance Bank' },
+                    { code: '999', name: 'AB Microfinance Bank' },
+                    { code: '999', name: 'Accion Microfinance Bank' },
+                    { code: '999', name: 'Fortis Microfinance Bank' },
+                    { code: '999', name: 'FSDH Merchant Bank' }
+                ];
+            }
+
+            setupEventListeners() {
+                // Amount suggestions
+                document.querySelectorAll('.amount-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const amount = e.target.dataset.amount;
+                        this.withdrawAmount.value = amount;
+                        this.validateAmount();
+                        this.calculateFee();
+                    });
+                });
+
+                // Account number input
+                this.accountNumber.addEventListener('input', () => {
+                    this.handleAccountNumberInput();
+                });
+
+                // Account holder name input (when user needs to enter it)
+                this.accountHolder.addEventListener('blur', () => {
+                    if (!this.accountHolder.readOnly && this.accountHolder.value.trim()) {
+                        // Save the account data when user enters their name
+                        const accountNum = this.accountNumber.value;
+                        const accountName = this.accountHolder.value.trim();
+                        const bank = this.bankName.value;
+                        
+                        if (accountNum.length === 10 && accountName.length >= 2) {
+                            this.saveAccountData(accountNum, accountName, bank);
+                            this.accountHolder.readOnly = true;
+                            this.showMessage('✅ Account details saved! Next time you enter this account number, your name will appear automatically.', 'success');
+                        }
+                    }
+                });
+
+                // Amount validation
+                this.withdrawAmount.addEventListener('input', () => {
+                    this.validateAmount();
+                    this.calculateFee();
+                });
+
+                // Form submission
+                this.withdrawalForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.processWithdrawal();
+                });
+            }
+
+            handleAccountNumberInput() {
+                const accountNum = this.accountNumber.value;
+                
+                // Reset account holder field
+                this.accountHolder.value = '';
+                this.accountHolder.placeholder = 'Account holder name will appear here';
+                this.accountHolder.readOnly = true;
+                
+                if (accountNum.length >= 10) {
+                    // Populate bank list
+                    this.populateBankList();
+                    // Lookup account name
+                    this.lookupAccountName(accountNum);
+                } else {
+                    // Reset bank list
+                    this.bankName.innerHTML = '<option value="">First enter your account number above</option>';
+                    this.accountHolder.value = '';
+                }
+            }
+
+            populateBankList() {
+                this.bankName.innerHTML = '<option value="">Select your bank</option>';
+                
+                this.bankList.forEach(bank => {
+                    const option = document.createElement('option');
+                    option.value = bank.name;
+                    option.textContent = bank.name;
+                    this.bankName.appendChild(option);
+                });
+            }
+
+            lookupAccountName(accountNumber) {
+                // Show loading state
+                this.accountHolder.value = 'Looking up account name...';
+                
+                setTimeout(() => {
+                    // Check if we have stored account data for this number
+                    const storedAccounts = this.getStoredAccounts();
+                    const accountData = storedAccounts[accountNumber];
+                    
+                    if (accountData) {
+                        // Show stored account name
+                        this.accountHolder.value = accountData.name;
+                    } else {
+                        // Account not found, ask user to enter their name
+                        this.accountHolder.value = '';
+                        this.accountHolder.placeholder = 'Enter your full name as it appears on your bank account';
+                        this.accountHolder.readOnly = false;
+                        this.showMessage('⚠️ Please enter your full name as it appears on your bank account', 'error');
+                    }
+                }, 1500);
+            }
+
+            getStoredAccounts() {
+                const stored = this.getStoredValue('userAccounts', '{}');
+                return JSON.parse(stored);
+            }
+
+            saveAccountData(accountNumber, accountName, bankName) {
+                const storedAccounts = this.getStoredAccounts();
+                storedAccounts[accountNumber] = {
+                    name: accountName.toUpperCase(),
+                    bank: bankName,
+                    dateAdded: new Date().toISOString()
+                };
+                this.setStoredValue('userAccounts', JSON.stringify(storedAccounts));
+            }
+
+            validateAmount() {
+                const amount = parseFloat(this.withdrawAmount.value);
+                
+                if (isNaN(amount)) return;
+                
+                if (amount < 100) {
+                    this.withdrawAmount.setCustomValidity('Minimum withdrawal is ₦100.00');
+                } else if (amount > 500000) {
+                    this.withdrawAmount.setCustomValidity('Maximum withdrawal is ₦500,000.00');
+                } else if (amount > this.balance) {
+                    this.withdrawAmount.setCustomValidity('Insufficient balance');
+                } else {
+                    this.withdrawAmount.setCustomValidity('');
+                }
+            }
+
+            updateBalance() {
+                this.balanceElement.textContent = this.balance.toLocaleString('en-NG', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            processWithdrawal() {
+                const amount = parseFloat(this.withdrawAmount.value);
+                const bank = this.bankName.value;
+                const account = this.accountNumber.value;
+                const holder = this.accountHolder.value;
+                
+                // Validation
+                if (!this.validateWithdrawalData(amount, bank, account, holder)) {
+                    return;
+                }
+                
+                // Show loading state
+                this.withdrawBtn.disabled = true;
+                this.withdrawBtn.innerHTML = '<span class="loading"></span> Processing...';
+                
+                // Simulate processing
+                setTimeout(() => {
+                    // Calculate fee and net amount
+                    const feeAmount = amount * 0.20; // 20% fee
+                    const netAmount = amount - feeAmount;
+                    
+                    // Deduct from balance
+                    this.balance -= amount;
+                    this.setStoredValue('balance', this.balance.toString());
+                    this.updateBalance();
+                    
+                    // Generate reference
+                    const reference = 'WD' + Date.now().toString().slice(-8);
+                    
+                    // Show success
+                    this.showMessage(
+                        `✅ Withdrawal Successful!<br>
+                        Reference: ${reference}<br>
+                        Requested Amount: ₦${amount.toLocaleString()}<br>
+                        Withdrawal Fee (20%): ₦${feeAmount.toFixed(2)}<br>
+                        <strong>Amount Sent to Account: ₦${netAmount.toFixed(2)}</strong><br>
+                        Bank: ${bank}<br>
+                        Account: ${account}<br>
+                        Your funds will be credited within 24 hours.`,
+                        'success'
+                    );
+                    
+                    // Reset form
+                    this.withdrawalForm.reset();
+                    this.accountHolder.value = '';
+                    this.bankName.innerHTML = '<option value="">First enter your account number above</option>';
+                    this.feeInfo.style.display = 'none';
+                    
+                    // Reset button
+                    this.withdrawBtn.disabled = false;
+                    this.withdrawBtn.innerHTML = '<span class="coin-icon">💸</span>Process Withdrawal';
+                    
+                }, 3000);
+            }
+
+            validateWithdrawalData(amount, bank, account, holder) {
+                if (!amount || amount < 100) {
+                    this.showMessage('❌ Minimum withdrawal amount is ₦100.00', 'error');
+                    return false;
+                }
+                
+                if (amount > this.balance) {
+                    this.showMessage('❌ Insufficient balance for this withdrawal', 'error');
+                    return false;
+                }
+                
+                if (amount > 500000) {
+                    this.showMessage('❌ Maximum withdrawal amount is ₦500,000.00', 'error');
+                    return false;
+                }
+                
+                if (!bank) {
+                    this.showMessage('❌ Please select your bank', 'error');
+                    return false;
+                }
+                
+                if (!account || account.length < 10) {
+                    this.showMessage('❌ Please enter a valid 10-digit account number', 'error');
+                    return false;
+                }
+                
+                if (!holder || holder === 'Looking up account name...') {
+                    this.showMessage('❌ Please wait for account name verification or enter your name', 'error');
+                    return false;
+                }
+                
+                // Save account data if user entered it manually
+                if (!this.accountHolder.readOnly) {
+                    this.saveAccountData(account, holder, bank);
+                }
+                
+                return true;
+            }
+
+            calculateFee() {
+                const amount = parseFloat(this.withdrawAmount.value);
+                
+                if (isNaN(amount) || amount < 100) {
+                    this.feeInfo.style.display = 'none';
+                    return;
+                }
+                
+                const feePercentage = 0.20; // 20%
+                const feeAmount = amount * feePercentage;
+                const netAmount = amount - feeAmount;
+                
+                this.feeAmount.textContent = feeAmount.toFixed(2);
+                this.netAmount.textContent = netAmount.toFixed(2);
+                this.feeInfo.style.display = 'block';
+            }
+
+            showMessage(message, type) {
+                this.withdrawalMessage.innerHTML = message;
+                this.withdrawalMessage.className = `message ${type}`;
+                this.withdrawalMessage.style.display = 'block';
+                
+                // Auto-hide success messages
+                if (type === 'success') {
+                    setTimeout(() => {
+                        this.withdrawalMessage.style.display = 'none';
+                    }, 10000);
+                }
+                
+                // Scroll to message
+                this.withdrawalMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Initialize the withdrawal system
+        document.addEventListener('DOMContentLoaded', () => {
+            new WithdrawalSystem();
+        });
+    </script>
+</body>
+</html>

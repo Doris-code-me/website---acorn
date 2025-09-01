@@ -1,0 +1,263 @@
+<!-- purchase.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Purchase Form</title>
+   <script type="module" src="./js/config/config.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 28px;
+      font-weight: 300;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .item-display {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 2px solid #e1e5e9;
+    }
+
+    .item-display p {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .item-display span {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Media Queries for Responsive Design */
+    
+    /* Extra small devices (phones, 600px and down) */
+    @media only screen and (max-width: 600px) {
+      .container {
+        padding: 25px;
+        max-width: 100%;
+        border-radius: 15px;
+      }
+      
+      h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      
+      input[type="text"],
+      input[type="number"],
+      select {
+        padding: 12px;
+        font-size: 14px;
+      }
+      
+      button {
+        padding: 12px;
+        font-size: 14px;
+      }
+    }
+    
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media only screen and (min-width: 600px) and (max-width: 768px) {
+      .container {
+        max-width: 90%;
+        padding: 30px;
+      }
+    }
+    
+    /* Medium devices (landscape tablets, 768px and up) */
+    @media only screen and (min-width: 768px) and (max-width: 992px) {
+      .container {
+        max-width: 80%;
+      }
+    }
+    
+    /* Large devices (laptops/desktops, 992px and up) */
+    @media only screen and (min-width: 992px) and (max-width: 1200px) {
+      .container {
+        max-width: 450px;
+      }
+    }
+    
+    /* Extra large devices (large laptops and desktops, 1200px and up) */
+    @media only screen and (min-width: 1200px) {
+      .container {
+        max-width: 500px;
+      }
+      
+      h2 {
+        font-size: 32px;
+      }
+      
+      .form-group {
+        margin-bottom: 25px;
+      }
+    }
+    
+    /* For very small devices like older phones */
+    @media only screen and (max-width: 320px) {
+      .container {
+        padding: 15px;
+        border-radius: 10px;
+      }
+      
+      h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+      
+      .form-group {
+        margin-bottom: 15px;
+      }
+      
+      input[type="text"],
+      input[type="number"],
+      select {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
+    
+    /* For high-DPI devices and better touch targets */
+    @media only screen and (hover: none) and (pointer: coarse) {
+      input[type="text"],
+      input[type="number"],
+      select,
+      button {
+        min-height: 48px; /* Better touch targets */
+      }
+      
+      button:hover {
+        transform: none; /* Remove hover effects on touch devices */
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Purchase Form</h2>
+    <div class="item-display">
+      <p>Item: <span id="itemName"></span></p>
+    </div>
+    <form id="purchaseForm">
+      <div class="form-group">
+        <label for="fullName">Full Name:</label>
+        <input type="text" id="fullName" name="fullName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" required />
+      </div>
+
+      <div class="form-group">
+        <label for="payment">Payment Method:</label>
+        <select id="payment" name="payment" required>
+          <option value="">--Select--</option>
+          <option value="bank">Bank Transfer</option>
+          <option value="card">Credit Card</option>
+        </select>
+      </div>
+
+      <button type="submit">Submit Purchase</button>
+    </form>
+  </div>
+
+  <script>
+    // Show item from session
+    const item = sessionStorage.getItem("item");
+    document.getElementById("itemName").textContent = item || "Unknown Item";
+
+    document.getElementById("purchaseForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      // You can save data here if needed
+      window.location.href = "success.html";
+    });
+  </script>
+</body>
+</html>

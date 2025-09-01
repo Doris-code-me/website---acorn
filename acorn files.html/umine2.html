@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank Details Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+
+  <div id="app" class="max-w-2xl mx-auto"></div>
+
+  <script>
+    const app = document.getElementById("app");
+
+    let currentView = "form";
+    let showAccountNumber = false;
+    let formData = {
+      accountHolderName: "",
+      bankName: "",
+      accountNumber: "",
+      accountType: "checking",
+      phoneNumber: "",
+      email: ""
+    };
+    let savedDetails = null;
+    let errors = {};
+
+    function maskAccountNumber(accountNumber) {
+      if (!accountNumber) return "";
+      if (accountNumber.length <= 4) return accountNumber;
+      return "*".repeat(accountNumber.length - 4) + accountNumber.slice(-4);
+    }
+
+    function validateForm() {
+      errors = {};
+      if (!formData.accountHolderName.trim()) {
+        errors.accountHolderName = "Account holder name is required";
+      }
+      if (!formData.bankName.trim()) {
+        errors.bankName = "Bank name is required";
+      }
+      if (!formData.accountNumber.trim()) {
+        errors.accountNumber = "Account number is required";
+      } else if (formData.accountNumber.length < 8 || formData.accountNumber.length > 17) {
+        errors.accountNumber = "Account number must be between 8-17 digits";
+      }
+     
+      if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        errors.email = "Please enter a valid email address";
+      }
+      if (formData.phoneNumber && !/^[\d\s\-\+\(\)]{10,}$/.test(formData.phoneNumber)) {
+        errors.phoneNumber = "Please enter a valid phone number";
+      }
+      return Object.keys(errors).length === 0;
+    }
+
+    function handleInputChange(name, value) {
+      formData[name] = value;
+      if (errors[name]) {
+        delete errors[name];
+      }
+      render();
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      if (validateForm()) {
+        savedDetails = {
+          ...formData,
+          lastUpdated: new Date().toLocaleDateString()
+        };
+        currentView = "display";
+        render();
+      } else {
+        render();
+      }
+    }
+
+    function render() {
+      if (currentView === "display" && savedDetails) {
+        app.innerHTML = `
+          <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+              <h1 class="text-3xl font-bold text-white mb-2">Bank Details</h1>
+              <p class="text-blue-100">Your saved banking information</p>
+            </div>
+            <div class="p-8 space-y-6">
+              <div>
+                <h3 class="text-lg font-semibold mb-2">Account Information</h3>
+                <p><strong>Name:</strong> ${savedDetails.accountHolderName}</p>
+                <p><strong>Type:</strong> ${savedDetails.accountType}</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold mb-2">Bank Information</h3>
+                <p><strong>Bank:</strong> ${savedDetails.bankName}</p>
+                <p><strong>Routing:</strong> ${savedDetails.routingNumber}</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold mb-2">Account Number</h3>
+                <p class="text-lg font-medium">
+                  ${showAccountNumber ? savedDetails.accountNumber : maskAccountNumber(savedDetails.accountNumber)}
+                  <button class="ml-4 text-blue-600 underline" onclick="toggleAccountNumber()"> 
+                    ${showAccountNumber ? "Hide" : "Show"}
+                  </button>
+                </p>
+              </div>
+              <div>
+               
+                ${savedDetails.phoneNumber ? `<p><strong>Phone:</strong> ${savedDetails.phoneNumber}</p>` : ""}
+                ${savedDetails.email ? `<p><strong>Email:</strong> ${savedDetails.email}</p>` : ""}
+              </div>
+              <div class="flex justify-between items-center pt-4 border-t">
+                <p class="text-sm text-gray-500">Last updated: ${savedDetails.lastUpdated}</p>
+                <button onclick="switchToForm()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Update</button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        app.innerHTML = `
+          <form class="bg-white rounded-2xl shadow-xl overflow-hidden" onsubmit="handleSubmit(event)">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+              <h1 class="text-3xl font-bold text-white mb-2">Update Bank Details</h1>
+              <p class="text-blue-100">Please provide your banking information below</p>
+            </div>
+            <div class="p-8 space-y-6">
+              <div>
+                <label class="block text-sm font-medium">Account Holder Name *</label>
+                <input type="text" name="accountHolderName" value="${formData.accountHolderName}" 
+                  oninput="handleInputChange('accountHolderName', this.value)" 
+                  class="w-full px-4 py-2 border ${errors.accountHolderName ? 'border-red-500' : 'border-gray-300'} rounded-lg">
+                ${errors.accountHolderName ? `<p class="text-red-500 text-sm">${errors.accountHolderName}</p>` : ""}
+              </div>
+              <div>
+                <label class="block text-sm font-medium">Account Type *</label>
+                <select name="accountType" onchange="handleInputChange('accountType', this.value)" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                  <option value="checking" ${formData.accountType === "checking" ? "selected" : ""}>Checking</option>
+                  <option value="savings" ${formData.accountType === "savings" ? "selected" : ""}>Savings</option>
+                  <option value="business" ${formData.accountType === "business" ? "selected" : ""}>Business</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium">Bank Name *</label>
+                <input type="text" name="bankName" value="${formData.bankName}" 
+                  oninput="handleInputChange('bankName', this.value)" 
+                  class="w-full px-4 py-2 border ${errors.bankName ? 'border-red-500' : 'border-gray-300'} rounded-lg">
+                ${errors.bankName ? `<p class="text-red-500 text-sm">${errors.bankName}</p>` : ""}
+              </div>
+              <div>
+                <label class="block text-sm font-medium">Account Number *</label>
+                <input type="text" name="accountNumber" value="${formData.accountNumber}" 
+                  oninput="handleInputChange('accountNumber', this.value)" 
+                  class="w-full px-4 py-2 border ${errors.accountNumber ? 'border-red-500' : 'border-gray-300'} rounded-lg">
+                ${errors.accountNumber ? `<p class="text-red-500 text-sm">${errors.accountNumber}</p>` : ""}
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium">Phone Number (Optional)</label>
+                <input type="tel" name="phoneNumber" value="${formData.phoneNumber}" 
+                  oninput="handleInputChange('phoneNumber', this.value)" 
+                  class="w-full px-4 py-2 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} rounded-lg">
+                ${errors.phoneNumber ? `<p class="text-red-500 text-sm">${errors.phoneNumber}</p>` : ""}
+              </div>
+              <div>
+                <label class="block text-sm font-medium">Email (Optional)</label>
+                <input type="email" name="email" value="${formData.email}" 
+                  oninput="handleInputChange('email', this.value)" 
+                  class="w-full px-4 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg">
+                ${errors.email ? `<p class="text-red-500 text-sm">${errors.email}</p>` : ""}
+              </div>
+              <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg">Save Bank Details</button>
+            </div>
+          </form>
+        `;
+      }
+    }
+
+    function switchToForm() {
+      currentView = "form";
+      render();
+    }
+
+    function toggleAccountNumber() {
+      showAccountNumber = !showAccountNumber;
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

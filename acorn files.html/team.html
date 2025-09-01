@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team - Investment Platform</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-strong: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --border-radius: 20px;
+            --border-radius-small: 12px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        #team-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 50px;
+            box-shadow: var(--shadow-strong);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #team-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        #team-section h1 {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        #team-section h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        #team-section h1 i {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* User Registration Section */
+        .user-registration {
+            background: var(--success-gradient);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .user-registration h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .user-form {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-form input {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-primary);
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .user-form input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .user-form button {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-form button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Referral Code Section */
+        .referral-section {
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-bottom: 50px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-strong);
+        }
+
+        .referral-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(30deg); }
+        }
+
+        .referral-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .referral-code-container {
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-small);
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .referral-code-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .referral-code {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            font-family: 'Space Grotesk', monospace;
+            color: #fff;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.8); }
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 15px 30px;
+            border-radius: var(--border-radius-small);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .copy-btn:hover::before {
+            left: 100%;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn.copied {
+            background: #48bb78;
+            border-color: #48bb78;
+            animation: success 0.6s ease;
+        }
+
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .referral-info {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .team-member {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: var(--border-radius);
+            padding: 35px 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: height 0.3s ease;
+        }
+
+        .team-member:hover::before {
+            height: 8px;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .team-member button {
+            width: 100%;
+            padding: 18px 25px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-small);
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-member button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .team-member button:hover::before {
+            left: 100%;
+        }
+
+        .team-member button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .team-member button i {
+            font-size: 1.3rem;
+        }
+
+        .team-member h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: var(--border-radius-small);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-member h2::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .team-member h2:hover::before {
+            left: 100%;
+        }
+
+        .team-member h2 i {
+            color: #667eea;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .team-member h2:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Special styling for different levels */
+        .team-member:nth-child(2) button {
+            background: var(--success-gradient);
+        }
+
+        .team-member:nth-child(2) h2 {
+            border-left-color: #4facfe;
+            background: rgba(79, 172, 254, 0.05);
+        }
+
+        .team-member:nth-child(2) h2 i {
+            color: #4facfe;
+        }
+
+        .team-member:nth-child(2) h2::before {
+            background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+        }
+
+        .team-member:nth-child(3) button {
+            background: var(--warning-gradient);
+        }
+
+        .team-member:nth-child(3) h2 {
+            border-left-color: #fa709a;
+            background: rgba(250, 112, 154, 0.05);
+        }
+
+        .team-member:nth-child(3) h2 i {
+            color: #fa709a;
+        }
+
+        .team-member:nth-child(3) h2::before {
+            background: linear-gradient(90deg, transparent, rgba(250, 112, 154, 0.1), transparent);
+        }
+
+        .team-member:nth-child(4) button {
+            background: var(--danger-gradient);
+        }
+
+        .team-member:nth-child(4) h2 {
+            border-left-color: #ff9a9e;
+            background: rgba(255, 154, 158, 0.05);
+        }
+
+        .team-member:nth-child(4) h2 i {
+            color: #ff9a9e;
+        }
+
+        .team-member:nth-child(4) h2::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 154, 158, 0.1), transparent);
+        }
+
+        /* Invitation Bonus Section */
+        .invitation-bonus {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-top: 50px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .invitation-bonus::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--secondary-gradient);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .invitation-bonus h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .invitation-bonus h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Toast notification styles */
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-strong);
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 1.2rem;
+        }
+
+        /* Warning message for no user */
+        .no-user-warning {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #721c24;
+            padding: 20px;
+            border-radius: var(--border-radius-small);
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            #team-section {
+                padding: 40px 25px;
+            }
+
+            #team-section h1 {
+                font-size: 2.5rem;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .user-registration {
+                padding: 25px 20px;
+            }
+
+            .user-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-form input {
+                min-width: auto;
+            }
+
+            .referral-section {
+                padding: 30px 20px;
+            }
+
+            .referral-code {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .invitation-bonus {
+                padding: 30px 25px;
+            }
+
+            .invitation-bonus h1 {
+                font-size: 2rem;
+            }
+
+            .invitation-bonus h2 {
+                font-size: 1.1rem;
+            }
+
+            .toast {
+                top: 20px;
+                right: 15px;
+                left: 15px;
+                transform: translateY(-100%);
+            }
+
+            .toast.show {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            #team-section {
+                padding: 30px 20px;
+            }
+
+            #team-section h1 {
+                font-size: 2rem;
+            }
+
+            .user-registration {
+                padding: 20px 15px;
+            }
+
+            .referral-section {
+                padding: 25px 15px;
+            }
+
+            .referral-code {
+                font-size: 1.8rem;
+                letter-spacing: 1px;
+            }
+
+            .team-member {
+                padding: 30px 25px;
+            }
+
+            .team-member button {
+                padding: 15px 20px;
+                font-size: 1.1rem;
+            }
+
+            .team-member h2 {
+                font-size: 1rem;
+                padding: 12px 15px;
+                gap: 10px;
+            }
+
+            .invitation-bonus {
+                padding: 25px 20px;
+            }
+
+            .invitation-bonus h1 {
+                font-size: 1.8rem;
+            }
+
+            .invitation-bonus h2 {
+                font-size: 1rem;
+            }
+        }
+
+        /* Animation for page load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .user-registration {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .referral-section {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .team-member {
+            animation: slideInRight 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .invitation-bonus {
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        .team-member:nth-child(1) { animation-delay: 0.2s; }
+        .team-member:nth-child(2) { animation-delay: 0.3s; }
+        .team-member:nth-child(3) { animation-delay: 0.4s; }
+        .team-member:nth-child(4) { animation-delay: 0.5s; }
+
+        /* Hover effects for info items */
+        .team-member h2:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(8px);
+            border-left-width: 6px;
+        }
+
+        .team-member:nth-child(2) h2:hover {
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .team-member:nth-child(3) h2:hover {
+            background: rgba(250, 112, 154, 0.1);
+        }
+
+        .team-member:nth-child(4) h2:hover {
+            background: rgba(255, 154, 158, 0.1);
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="team-section">
+            <h1>
+                <i class="fas fa-users"></i>
+                My Team
+            </h1>
+
+            <!-- User Registration Section -->
+            <div class="user-registration" id="userRegistration">
+                <h2>
+                    <i class="fas fa-user-plus"></i>
+                    Create Your Account & Get Referral Code
+                </h2>
+                <div class="user-form">
+                    <input type="text" id="userName" placeholder="Enter your full name" required>
+                    <input type="email" id="userEmail" placeholder="Enter your email" required>
+                    <button type="button" id="generateCodeBtn">
+                        <i class="fas fa-magic"></i>
+                        Generate My Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Warning for no referral code -->
+            <div class="no-user-warning hidden" id="noUserWarning">
+                <i class="fas fa-exclamation-triangle"></i>
+                Please create your account first to get your unique referral code!
+            </div>
+
+            <!-- Referral Code Section -->
+            <div class="referral-section" id="referralSection">
+                <h2>
+                    <i class="fas fa-share-alt"></i>
+                    Your Referral Code
+                </h2>
+                <div class="referral-code-container">
+                    <div class="referral-code" id="referralCode">
+                        Create account to get code
+                    </div>
+                    <button class="copy-btn" id="copyBtn" disabled>
+                        <i class="fas fa-copy"></i>
+                        Copy Code
+                    </button>
+                </div>
+                <div class="referral-info">
+                    Share this code with your friends to earn commissions when they join and invest!
+                </div>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <button>
+                        <i class="fas fa-info-circle"></i>
+                        Team Details
+                    </button>
+                    <h1>Number of people</h1>
+                </div>
+
+                <div class="team-member">
+                    <button>
+                        <i class="fas fa-trophy"></i>
+                        LV1
+                    </button>
+                    <h2>
+                        <i class="fas fa-percentage"></i>
+                        3% Buy Commission
+                    </h2>
+                    <h2>
+                        <i class="fas fa-user-check"></i>
+                        0 Valid User
+                    </h2>
+                    <h2>
+                        <i class="fas fa-gift"></i>
+                        0.00 BONUS
+                    </h2>
+                </div>
+
+                <div class="team-member">
+                    <button>
+                        <i class="fas fa-medal"></i>
+                        LV2
+                    </button>
+                    <h2>
+                        <i class="fas fa-percentage"></i>
+                        3% Buy Commission
+                    </h2>
+                    <h2>
+                        <i class="fas fa-user-check"></i>
+                        0 Valid User
+                    </h2>
+                    <h2>
+                        <i class="fas fa-gift"></i>
+                        0.00 BONUS
+                    </h2>
+                </div>
+
+                <div class="team-member">
+                    <button>
+                        <i class="fas fa-crown"></i>
+                        LV3
+                    </button>
+                    <h2>
+                        <i class="fas fa-percentage"></i>
+                        2% Buy Commission
+                    </h2>
+                    <h2>
+                        <i class="fas fa-user-check"></i>
+                        0 Valid User
+                    </h2>
+                    <h2>
+                        <i class="fas fa-gift"></i>
+                        0.00 BONUS
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Invitation Bonus Section -->
+            <div class="invitation-bonus">
+                <h1>Invitation Bonus</h1>
+                <h2>
+                    When a friend you invite registers and invests, you will immediately receive a cash reward of 30% of the friend's investment amount.
+                    When your level 2 team members invest, you will receive a 3% cash bonus.
+                    When your level 3 team members invest, you will receive a 2% cash bonus.
+                    Once your team member invests, the cash bonus is instantly credited to your account balance and you can withdraw it right away.
+                </h2>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span>Referral code copied to clipboard!</span>
+    </div>
+
+    <script>
+        // In-memory storage for user data (works in Claude.ai)
+        let currentUser = null;
+        let userDatabase = {};
+
+        // Simple hash function for generating consistent codes
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32-bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        // Generate unique referral code based on user data
+        function generateReferralCode(name, email) {
+            // Clean and normalize inputs
+            const cleanName = name.trim().toUpperCase().replace(/[^A-Z]/g, '');
+            const cleanEmail = email.trim().toLowerCase();
+            
+            // Create unique string combining name, email, and current timestamp
+            const uniqueString = cleanName + cleanEmail + Date.now();
+            const hash = simpleHash(uniqueString);
+            
+            // Create code with name prefix and random suffix
+            const namePrefix = cleanName.substring(0, 2) || 'US';
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let codeSuffix = '';
+            
+            // Generate 6-character suffix based on hash
+            let tempHash = hash;
+            for (let i = 0; i < 6; i++) {
+                codeSuffix += chars.charAt(tempHash % chars.length);
+                tempHash = Math.floor(tempHash / chars.length);
+            }
+            
+            return namePrefix + codeSuffix;
+        }
+
+        // Create new user account
+        function createUserAccount(name, email) {
+            if (!name || !email) {
+                showToast('Please enter both name and email!', 'error');
+                return null;
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('Please enter a valid email address!', 'error');
+                return null;
+            }
+
+            // Check if user already exists
+            const userKey = email.toLowerCase();
+            if (userDatabase[userKey]) {
+                // User exists, load their data
+                currentUser = userDatabase[userKey];
+                showToast('Welcome back! Your referral code has been loaded.', 'success');
+            } else {
+                // Create new user
+                const referralCode = generateReferralCode(name, email);
+                currentUser = {
+                    name: name.trim(),
+                    email: email.toLowerCase(),
+                    referralCode: referralCode,
+                    createdAt: new Date().toISOString(),
+                    teamMembers: {
+                        level1: 0,
+                        level2: 0,
+                        level3: 0
+                    },
+                    earnings: {
+                        level1: 0,
+                        level2: 0,
+                        level3: 0
+                    }
+                };
+                
+                // Store in database
+                userDatabase[userKey] = currentUser;
+                showToast('Account created successfully! Your referral code is ready.', 'success');
+            }
+
+            return currentUser;
+        }
+
+        // Copy referral code to clipboard
+        async function copyReferralCode() {
+            if (!currentUser) {
+                showToast('Please create your account first!', 'error');
+                return;
+            }
+
+            const referralCode = document.getElementById('referralCode').textContent;
+            const copyBtn = document.getElementById('copyBtn');
+            
+            try {
+                await navigator.clipboard.writeText(referralCode);
+                
+                // Update button appearance
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                showToast('Referral code copied to clipboard!', 'success');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Code';
+                }, 2000);
+                
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = referralCode;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                showToast('Referral code copied to clipboard!', 'success');
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Code';
+                }, 2000);
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastSpan = toast.querySelector('span');
+            const toastIcon = toast.querySelector('i');
+            
+            toastSpan.textContent = message;
+            
+            // Set appropriate colors based on type
+            if (type === 'error') {
+                toast.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
+                toastIcon.className = 'fas fa-exclamation-circle';
+            } else {
+                toast.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+                toastIcon.className = 'fas fa-check-circle';
+            }
+            
+            toast.classList.add('show');
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update UI with user data
+        function updateUserInterface() {
+            const userRegistration = document.getElementById('userRegistration');
+            const noUserWarning = document.getElementById('noUserWarning');
+            const referralCode = document.getElementById('referralCode');
+            const copyBtn = document.getElementById('copyBtn');
+
+            if (currentUser) {
+                // Hide registration form and warning
+                userRegistration.classList.add('hidden');
+                noUserWarning.classList.add('hidden');
+                
+                // Show referral code
+                referralCode.textContent = currentUser.referralCode;
+                copyBtn.disabled = false;
+                copyBtn.style.opacity = '1';
+                copyBtn.style.cursor = 'pointer';
+                
+                // Update page title with user name
+                const pageTitle = document.querySelector('#team-section h1');
+                pageTitle.innerHTML = `
+                    <i class="fas fa-users"></i>
+                    ${currentUser.name}'s Team
+                `;
+            } else {
+                // Show registration form
+                userRegistration.classList.remove('hidden');
+                noUserWarning.classList.remove('hidden');
+                
+                // Hide/disable referral code
+                referralCode.textContent = 'Create account to get code';
+                copyBtn.disabled = true;
+                copyBtn.style.opacity = '0.6';
+                copyBtn.style.cursor = 'not-allowed';
+            }
+        }
+
+        // Simulate team member joining (for demo purposes)
+        function simulateTeamGrowth() {
+            if (!currentUser) return;
+
+            // Randomly add team members
+            const levels = ['level1', 'level2', 'level3'];
+            const randomLevel = levels[Math.floor(Math.random() * levels.length)];
+            
+            currentUser.teamMembers[randomLevel]++;
+            
+            // Add some earnings
+            const earnings = {
+                level1: Math.random() * 100,
+                level2: Math.random() * 50,
+                level3: Math.random() * 25
+            };
+            
+            currentUser.earnings[randomLevel] += earnings[randomLevel];
+            
+            // Update display (you can expand this to show real data)
+            showToast(`New ${randomLevel} team member joined! Earned ${earnings[randomLevel].toFixed(2)}`, 'success');
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners
+            document.getElementById('generateCodeBtn').addEventListener('click', function() {
+                const name = document.getElementById('userName').value;
+                const email = document.getElementById('userEmail').value;
+                
+                const user = createUserAccount(name, email);
+                if (user) {
+                    updateUserInterface();
+                    
+                    // Clear form inputs
+                    document.getElementById('userName').value = '';
+                    document.getElementById('userEmail').value = '';
+                }
+            });
+
+            document.getElementById('copyBtn').addEventListener('click', copyReferralCode);
+            
+            // Allow Enter key to generate code
+            document.getElementById('userName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('generateCodeBtn').click();
+                }
+            });
+            
+            document.getElementById('userEmail').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('generateCodeBtn').click();
+                }
+            });
+
+            // Initialize UI
+            updateUserInterface();
+            
+            // Demo: Simulate team growth every 10 seconds (remove in production)
+            setInterval(simulateTeamGrowth, 10000);
+        });
+
+        // Export functions for potential external use
+        window.ReferralSystem = {
+            createUser: createUserAccount,
+            getCurrentUser: () => currentUser,
+            getUserDatabase: () => userDatabase
+        };
+    </script>
+</body>
+</html>

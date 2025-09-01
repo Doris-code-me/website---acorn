@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Dashboard</title>
+     <script type="module" src="./js/config/config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .balance-amount {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .today-income {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn.recharge {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .btn.withdraw {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .records-table th, .records-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .records-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .bank-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .balance-amount {
+                font-size: 2em;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1 id="welcomeText">Welcome, User</h1>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- User Registration Modal -->
+        <div id="userModal" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
+                <h2 style="margin-bottom: 20px; text-align: center; color: #333;">Welcome! Please provide your details</h2>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="userName">Name</label>
+                        <input type="text" id="userName" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Phone Number</label>
+                        <input type="tel" id="userPhone" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email (Optional)</label>
+                        <input type="email" id="userEmail" placeholder="Enter your email">
+                    </div>
+                    <button type="button" onclick="saveUserData()" class="btn" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #4CAF50, #45a049);">Continue</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-amount" id="balance">₦0.00</div>
+            <p>Available Balance</p>
+            <div class="today-income">
+                <strong>Today's Income: <span id="todayIncome">₦0.00</span></strong>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn" onclick="showSection('deposit')">💰 Deposit</button>
+            <button class="btn withdraw" onclick="showSection('withdraw')">💸 Withdraw</button>
+            <button class="btn" onclick="showSection('bank')">🏦 Bank Details</button>
+            <button class="btn" onclick="showSection('contact')">📞 Contact Us</button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="nav-menu">
+            <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+            <button class="nav-btn" onclick="showSection('deposits')">Deposit Records</button>
+            <button class="nav-btn" onclick="showSection('withdrawals')">Withdrawal Records</button>
+            <button class="nav-btn" onclick="showSection('income')">Income Records</button>
+            <button class="nav-btn" onclick="showSection('password')">Change Password</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <h2>Dashboard Overview</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; text-align: center;">
+                    <h3 style="color: #1565c0;">Total Deposits</h3>
+                    <p style="font-size: 1.5em; font-weight: bold; color: #1565c0;">₦0.00</p>
+                </div>
+                <div style="background: #fff3e0; padding: 20px; border-radius: 10px; text-align: center;">
+                    <h3 style="color: #ef6c00;">Total Withdrawals</h3>
+                    <p style="font-size: 1.5em; font-weight: bold; color: #ef6c00;">₦0.00</p>
+                </div>
+                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; text-align: center;">
+                    <h3 style="color: #2e7d32;">Total Income</h3>
+                    <p style="font-size: 1.5em; font-weight: bold; color: #2e7d32;">₦0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit Section -->
+        <div id="deposit" class="section">
+            <h2>Make a Deposit</h2>
+            <p style="color: #666; margin-bottom: 20px;">Please contact our support team to make a deposit.</p>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                <h3>Contact Information:</h3>
+                <p><strong>📞 Phone:</strong> +234 (0) 123-456-789</p>
+                <p><strong>✉️ Email:</strong> support@example.com</p>
+                <p><strong>⏰ Business Hours:</strong> Mon-Fri: 9AM-6PM WAT</p>
+            </div>
+        </div>
+
+        <!-- Withdraw Section -->
+        <div id="withdraw" class="section">
+            <h2>Withdraw Funds</h2>
+            <form onsubmit="processWithdraw(event)">
+                <div class="form-group">
+                    <label for="withdrawAmount">Amount</label>
+                    <input type="number" id="withdrawAmount" placeholder="Enter amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawMethod">Withdrawal Method</label>
+                    <select id="withdrawMethod" required>
+                        <option value="">Select Withdrawal Method</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="wallet">Digital Wallet</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn withdraw">Process Withdrawal</button>
+            </form>
+        </div>
+
+        <!-- Bank Details Section -->
+        <div id="bank" class="section">
+            <h2>Bank Account Details</h2>
+            <div class="bank-details">
+                <h3>Linked Bank Account</h3>
+                <p><strong>Account Name:</strong> <span id="bankAccountName">Not Set</span></p>
+                <p><strong>Bank Name:</strong> First Bank Nigeria</p>
+                <p><strong>Account Number:</strong> ****1234</p>
+                <p><strong>Status:</strong> <span class="status success">Verified</span></p>
+            </div>
+           <a href="./umine2.html" class="btn">Update Bank Details</a>
+        </div>
+
+        <!-- Contact Us Section -->
+        <div id="contact" class="section">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <h3>📞 Phone Support</h3>
+                    <p>+234 (0) 123-456-789</p>
+                    <p>Mon-Fri: 9AM-6PM WAT</p>
+                </div>
+                <div class="contact-card">
+                    <h3>✉️ Email Support</h3>
+                    <p>support@example.com</p>
+                    <p>Response within 24hrs</p>
+                </div>
+                <div class="contact-card">
+                    <h3>💬 Live Chat</h3>
+                    <p>Available 24/7</p>
+                    <button class="btn" onclick="startChat()">Start Chat</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit Records Section -->
+        <div id="deposits" class="section">
+            <h2>Deposit Records</h2>
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Transaction ID</th>
+                    </tr>
+                </thead>
+                <tbody id="depositsTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #666; padding: 30px;">
+                            No deposits yet. Make your first deposit to get started!
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Withdrawal Records Section -->
+        <div id="withdrawals" class="section">
+            <h2>Withdrawal Records</h2>
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Transaction ID</th>
+                    </tr>
+                </thead>
+                <tbody id="withdrawalsTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #666; padding: 30px;">
+                            No withdrawals yet.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Income Records Section -->
+        <div id="income" class="section">
+            <h2>Income Records</h2>
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Source</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="incomeTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #666; padding: 30px;">
+                            No income records yet. Income will appear after deposits and trading activity.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Change Password Section -->
+        <div id="password" class="section">
+            <h2>Change Password</h2>
+            <form onsubmit="changePassword(event)">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                </div>
+                <button type="submit" class="btn">Update Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for data storage
+        let currentBalance = 0.00;
+        let todayIncome = 0.00;
+        let userData = {
+            name: '',
+            phone: '',
+            email: ''
+        };
+
+        // Check for existing user data and show modal if needed
+        function checkUserData() {
+            const savedData = getUserData();
+            if (!savedData.name || !savedData.phone) {
+                document.getElementById('userModal').style.display = 'block';
+            } else {
+                userData = savedData;
+                updateWelcomeText();
+                updateBankAccountName();
+            }
+        }
+
+        // Save user data
+        function saveUserData() {
+            const name = document.getElementById('userName').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            
+            // Validate required fields
+            if (!name || !phone) {
+                alert('Please enter both name and phone number.');
+                return;
+            }
+            
+            userData.name = name;
+            userData.phone = phone;
+            userData.email = email;
+            
+            // Store in memory (since we can't use localStorage)
+            window.tempUserData = userData;
+            
+            // Hide modal and update display
+            document.getElementById('userModal').style.display = 'none';
+            updateWelcomeText();
+            updateBankAccountName();
+            
+            alert('Welcome! Your account has been set up successfully.');
+        }
+
+        // Get user data from memory
+        function getUserData() {
+            return window.tempUserData || { name: '', phone: '', email: '' };
+        }
+
+        // Update welcome text with user name or phone
+        function updateWelcomeText() {
+            const displayName = userData.name || userData.phone || 'User';
+            document.getElementById('welcomeText').textContent = `Welcome, ${displayName}`;
+        }
+
+        // Update bank account name
+        function updateBankAccountName() {
+            const accountName = userData.name || 'Not Set';
+            document.getElementById('bankAccountName').textContent = accountName;
+        }
+        
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all nav buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav button
+            event.target.classList.add('active');
+        }
+
+        // Remove the recharge functionality and automatic income simulation
+        function processWithdraw(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const method = document.getElementById('withdrawMethod').value;
+            
+            if (currentBalance === 0) {
+                alert('No funds available for withdrawal. Please make a deposit first.');
+                return;
+            }
+            
+            if (amount > 0 && amount <= currentBalance) {
+                // Simulate processing
+                alert(`Processing withdrawal of ${amount} via ${method}...`);
+                
+                // Add to withdrawals table
+                addWithdrawalRecord(new Date().toISOString().split('T')[0], amount, method, 'success', 'WTH' + Date.now());
+                
+                // Update balance
+                currentBalance -= amount;
+                updateBalance();
+                
+                // Reset form
+                document.getElementById('withdrawAmount').value = '';
+                document.getElementById('withdrawMethod').value = '';
+                
+                alert('Withdrawal completed successfully!');
+            } else if (amount > currentBalance) {
+                alert('Insufficient balance!');
+            }
+        }
+
+        // Change password functionality
+        function changePassword(event) {
+            event.preventDefault();
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (newPass === confirm) {
+                // Simulate password change
+                alert('Password changed successfully!');
+                
+                // Reset form
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            } else {
+                alert('New passwords do not match!');
+            }
+        }
+
+        // Update balance display
+        function updateBalance() {
+            document.getElementById('balance').textContent = `₦${currentBalance.toFixed(2)}`;
+            document.getElementById('todayIncome').textContent = `₦${todayIncome.toFixed(2)}`;
+        }
+
+        // Add new deposit record
+        function addDepositRecord(date, amount, method, status, txnId) {
+            const tbody = document.getElementById('depositsTable');
+            
+            // Remove the "no deposits" message if it exists
+            if (tbody.rows.length === 1 && tbody.rows[0].cells.length === 1) {
+                tbody.innerHTML = '';
+            }
+            
+            const row = tbody.insertRow(0);
+            
+            const statusClass = status === 'success' ? 'success' : status === 'pending' ? 'pending' : 'failed';
+            const statusText = status === 'success' ? 'Completed' : status === 'pending' ? 'Pending' : 'Failed';
+            
+            row.innerHTML = `
+                <td>${date}</td>
+                <td>${amount.toFixed(2)}</td>
+                <td>${method}</td>
+                <td><span class="status ${statusClass}">${statusText}</span></td>
+                <td>${txnId}</td>
+            `;
+        }
+
+        // Add new withdrawal record
+        function addWithdrawalRecord(date, amount, method, status, txnId) {
+            const tbody = document.getElementById('withdrawalsTable');
+            
+            // Remove the "no withdrawals" message if it exists
+            if (tbody.rows.length === 1 && tbody.rows[0].cells.length === 1) {
+                tbody.innerHTML = '';
+            }
+            
+            const row = tbody.insertRow(0);
+            
+            const statusClass = status === 'success' ? 'success' : status === 'pending' ? 'pending' : 'failed';
+            const statusText = status === 'success' ? 'Completed' : status === 'pending' ? 'Pending' : 'Failed';
+            
+            row.innerHTML = `
+                <td>${date}</td>
+                <td>${amount.toFixed(2)}</td>
+                <td>${method}</td>
+                <td><span class="status ${statusClass}">${statusText}</span></td>
+                <td>${txnId}</td>
+            `;
+        }
+
+        // Bank details functionality
+        function updateBankDetails() {
+            alert('Bank details update feature would open a secure form to update your banking information.');
+        }
+
+        // Contact functionality
+        function startChat() {
+            alert('Live chat would open in a new window. For now, please use phone or email support.');
+        }
+
+        // Logout functionality
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('You have been logged out successfully!');
+                // In a real app, this would redirect to login page
+                location.reload();
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserData();
+            updateBalance();
+        });
+
+        // Handle navigation button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('nav-btn')) {
+                // Remove active class from all nav buttons
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                e.target.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acorn - Financial Freedom</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://acornpetroleum.com/wp-content/uploads/2012/04/marketing.jpg');
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header/Hero Section */
+        .main {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 40px 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .main h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .main h1::before {
+            content: '🌰';
+            margin-right: 15px;
+            font-size: 2.5rem;
+        }
+
+        .main p {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        /* Navigation Sections */
+        .nav-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 20px;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-card h3 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.4rem;
+            text-align: center;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: #333;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateX(10px);
+            border-left-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-links a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            width: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Specific icon colors */
+        .nav-links a[href*="home"] i { color: #28a745; }
+        .nav-links a[href*="product"] i { color: #17a2b8; }
+        .nav-links a[href*="team"] i { color: #ffc107; }
+        .nav-links a[href*="mine"] i { color: #6f42c1; }
+        .nav-links a[href*="recharge"] i { color: #20c997; }
+        .nav-links a[href*="withdrawal"] i { color: #fd7e14; }
+        .nav-links a[href*="help"] i { color: #e83e8c; }
+        .nav-links a[href*="checkin"] i { color: #6610f2; }
+        .nav-links a[href*="login"] i { color: #dc3545; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main p {
+                font-size: 1.1rem;
+            }
+            
+            .nav-section {
+                grid-template-columns: 1fr;
+                margin: 20px 10px;
+            }
+            
+            .nav-card {
+                padding: 20px;
+            }
+            
+            .main {
+                margin: 20px 10px;
+                padding: 60px 15px 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main h1 {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            
+            .nav-links a {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Loading animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .nav-card {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .nav-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        /* Footer-like styling for better spacing */
+        body {
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>Welcome to Acorn</h1>
+        <p>Your gateway to financial freedom</p>
+        <a href="./login.html" class="btn">
+            <i class="fas fa-rocket"></i>Get Started
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-card">
+            <div class="nav-links inline-nav">
+                <a href="./index.html">
+                    <i class="fas fa-home"></i>Home
+                </a>
+                <a href="./product.html">
+                    <i class="fas fa-cube"></i>Product
+                </a>
+                <a href="./team.html">
+                    <i class="fas fa-users"></i>Team
+                </a>
+                <a href="./umine.html">
+                    <i class="fas fa-pickaxe"></i>Mine
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-card">
+            <h3><i class="fas fa-tools"></i> Account Services</h3>
+            <div class="nav-links">
+                <a href="./vrecharge.html">
+                    <i class="fas fa-credit-card"></i>Recharge
+                </a>
+                <a href="./withdrawl.html">
+                    <i class="fas fa-money-bill-wave"></i>Withdrawal
+                </a>
+                <a href="./xhelp.html">
+                    <i class="fas fa-question-circle"></i>Help
+                </a>
+                <a href="./ycheckin.html">
+                    <i class="fas fa-calendar-check"></i>Check-in
+                </a>
+                <a href="./login.html">
+                    <i class="fas fa-sign-in-alt"></i>Login
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
